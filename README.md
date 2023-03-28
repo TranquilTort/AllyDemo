@@ -1,35 +1,23 @@
-# AllyDemo
-
 declare module 'react-data-export' {
   import { ReactNode } from 'react';
 
-  interface Column {
-    label: string;
-    value: string;
-  }
-
-  interface Sheet {
-    data: Array<Record<string, any>>;
-    name?: string;
-    columns?: Array<Column>;
-  }
-
-  interface ExcelFileProps {
+  export class ExcelFile extends React.Component<{
     filename?: string;
     element?: ReactNode;
-  }
+  }> {}
 
-  interface ExcelSheetProps extends Sheet {
+  export class ExcelSheet extends React.Component<{
+    data: Array<Record<string, any>>;
+    name?: string;
     children: ReactNode;
-  }
+    columns?: Array<{
+      label: string;
+      value: string;
+    }>;
+  }> {}
 
-  interface ExcelColumnProps extends Column {}
-
-  export class ExcelFile extends React.Component<ExcelFileProps> {
-    static downloadExcel(data: { sheets: Array<Sheet> }, filename?: string): void;
-  }
-
-  export class ExcelSheet extends React.Component<ExcelSheetProps> {}
-
-  export class ExcelColumn extends React.Component<ExcelColumnProps> {}
+  export class ExcelColumn extends React.Component<{
+    label: string;
+    value: string;
+  }> {}
 }
