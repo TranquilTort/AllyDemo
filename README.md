@@ -1,6 +1,4 @@
 ```
-import * as XLSX from 'xlsx';
-
 function downloadExcelFile(filename: string, headers: { key: string }[], data: object[]) {
   // Create a new workbook and sheet
   const wb = XLSX.utils.book_new();
@@ -8,6 +6,14 @@ function downloadExcelFile(filename: string, headers: { key: string }[], data: o
 
   // Add the sheet to the workbook
   XLSX.utils.book_append_sheet(wb, ws);
+
+  // Set column widths based on the length of the header and data values
+  const columnWidths = headers.map((header, index) => {
+    const dataWidths = data.map(row => String(row[header.key]).length);
+    const headerWidth = header.key.length;
+    return Math.max(...dataWidths, headerWidth) + 2;
+  });
+  XLSX.utils.sheet_set_column_widths(ws, columnWidths);
 
   // Generate a binary string from the workbook
   const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
@@ -22,13 +28,5 @@ function downloadExcelFile(filename: string, headers: { key: string }[], data: o
   link.click();
 }
 
-function s2ab(s: string): ArrayBuffer {
-  const buf = new ArrayBuffer(s.length);
-  const view = new Uint8Array(buf);
-  for (let i = 0; i < s.length; i++) {
-    view[i] = s.charCodeAt(i) & 0xFF;
-  }
-  return buf;
-}
 
 ```
