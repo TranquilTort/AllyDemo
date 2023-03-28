@@ -1,7 +1,7 @@
 ```
-const XLSX = require('xlsx');
+import * as XLSX from 'xlsx';
 
-function downloadExcelFile(filename, headers, data) {
+function downloadExcelFile(filename: string, headers: { key: string }[], data: object[]) {
   // Create a new workbook and sheet
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.json_to_sheet(data, { header: headers.map(h => h.key) });
@@ -22,7 +22,7 @@ function downloadExcelFile(filename, headers, data) {
   link.click();
 }
 
-function s2ab(s) {
+function s2ab(s: string): ArrayBuffer {
   const buf = new ArrayBuffer(s.length);
   const view = new Uint8Array(buf);
   for (let i = 0; i < s.length; i++) {
@@ -30,4 +30,5 @@ function s2ab(s) {
   }
   return buf;
 }
+
 ```
