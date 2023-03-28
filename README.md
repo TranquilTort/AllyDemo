@@ -1,23 +1,11 @@
-declare module 'react-data-export' {
-  import { ReactNode } from 'react';
+const XLSX = require('xlsx');
+const { saveAs } = require('file-saver'); // required for downloading file in browser
 
-  export class ExcelFile extends React.Component<{
-    filename?: string;
-    element?: ReactNode;
-  }> {}
-
-  export class ExcelSheet extends React.Component<{
-    data: Array<Record<string, any>>;
-    name?: string;
-    children: ReactNode;
-    columns?: Array<{
-      label: string;
-      value: string;
-    }>;
-  }> {}
-
-  export class ExcelColumn extends React.Component<{
-    label: string;
-    value: string;
-  }> {}
+function downloadExcelFile(filename, headers, data) {
+  const worksheet = XLSX.utils.json_to_sheet(data, { header: headers.map(h => h.key) });
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  saveAs(blob, `${filename}.xlsx`);
 }
