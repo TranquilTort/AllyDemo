@@ -1,3 +1,4 @@
+```
 const XLSX = require('xlsx');
 
 function downloadExcelFile(filename, headers, data) {
@@ -29,3 +30,4 @@ function s2ab(s) {
   }
   return buf;
 }
+```
