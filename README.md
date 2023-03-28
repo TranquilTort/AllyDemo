@@ -1,4 +1,17 @@
 ```
+function sheet_set_column_widths(worksheet: XLSX.WorkSheet, columnWidths: number[]) {
+  const range = { s: { c: 0, r: 0 }, e: { c: 0, r: 0 } };
+  for (let i = 0; i < columnWidths.length; i++) {
+    range.e.c = i;
+    XLSX.utils.sheet_set_column_width(worksheet, i, i, columnWidths[i]);
+  }
+  worksheet['!cols'] = worksheet['!cols'] || [];
+  for (let i = 0; i < columnWidths.length; i++) {
+    worksheet['!cols'][i] = { width: columnWidths[i] };
+  }
+  worksheet['!ref'] = XLSX.utils.encode_range(range);
+}
+
 function downloadExcelFile(filename: string, headers: { key: string }[], data: object[]) {
   // Create a new workbook and sheet
   const wb = XLSX.utils.book_new();
