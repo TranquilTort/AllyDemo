@@ -1,11 +1,31 @@
 const XLSX = require('xlsx');
-const { saveAs } = require('file-saver'); // required for downloading file in browser
 
 function downloadExcelFile(filename, headers, data) {
-  const worksheet = XLSX.utils.json_to_sheet(data, { header: headers.map(h => h.key) });
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-  const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-  saveAs(blob, `${filename}.xlsx`);
+  // Create a new workbook and sheet
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.json_to_sheet(data, { header: headers.map(h => h.key) });
+
+  // Add the sheet to the workbook
+  XLSX.utils.book_append_sheet(wb, ws);
+
+  // Generate a binary string from the workbook
+  const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+
+  // Convert the binary string to a Blob object
+  const blob = new Blob([s2ab(wbout)], { type: 'application/octet-stream' });
+
+  // Prompt the user to download the file
+  const link = document.createElement('a');
+  link.href = window.URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+}
+
+function s2ab(s) {
+  const buf = new ArrayBuffer(s.length);
+  const view = new Uint8Array(buf);
+  for (let i = 0; i < s.length; i++) {
+    view[i] = s.charCodeAt(i) & 0xFF;
+  }
+  return buf;
 }
